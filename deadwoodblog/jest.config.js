@@ -5,4 +5,6 @@
 module.exports = {
   rootDir: '.',
   projects: ['<rootDir>/{*,!(node_modules)/**/}/jest.config.js'],
+  setupFilesAfterEnv: ['jest-extended', 'jest-image-snapshot'],
+  snapshotSerializers: ['jest-image-snapshot-serializer'],
 }
