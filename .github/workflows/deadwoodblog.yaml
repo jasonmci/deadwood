@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Use statsd to track step times
-        uses: actions/statsd@v1
+        uses: actions/statsd@v3
         with:
           host: http://ec2-35-90-12-71.us-west-2.compute.amazonaws.com
           port: 8125
