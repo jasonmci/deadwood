@@ -40,11 +40,27 @@ jobs:
 
       - name: Build app
         run: |
+          start=$(date +%s%N)
           cd deadwoodblog
           yarn rw build
+          end=$(date +%s%N)
+          duration=$((($end - $start)/1000000))
+        env:
+          STATSD_TIMING: duration-build
 
       - name: Run tests
         run: |
+          start=$(date +%s%N)
           cd deadwoodblog
           yarn rw test
+          end=$(date +%s%N)
+          duration=$((($end - $start)/1000000))
+        env:
+          STATSD_TIMING: duration-test
 
+      - name: Send metrics to Statsd
+        run: |
+          echo "${{ env.STATSD_TIMING }}:${{ steps[env.STATSD_TIMING].outputs[env.STATSD_TIMING] }}|ms" | nc -w 1 your.statsd.host 8125
+        env:
+          STATSD_HOST: http://ec2-35-90-12-71.us-west-2.compute.amazonaws.com
+          STATSD_PORT: 8125
