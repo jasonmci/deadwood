@@ -60,4 +60,4 @@ jobs:
 
       - name: Send metrics to Statsd
         run: |
-          echo "${{ env.STATSD_TIMING }}:${{ steps[env.STATSD_TIMING].outputs[env.STATSD_TIMING] }}|ms" | nc -w 1 http://ec2-35-90-12-71.us-west-2.compute.amazonaws.com 8125
+          echo "${{ env.STATSD_TIMING }}:${{ steps[env.STATSD_TIMING].outputs[env.STATSD_TIMING] }}|ms" | nc -w 1 ec2-35-90-12-71.us-west-2.compute.amazonaws.com 8125
