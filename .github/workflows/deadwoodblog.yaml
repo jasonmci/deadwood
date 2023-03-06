@@ -9,6 +9,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Use statsd to track step times
+        uses: actions/statsd@v1
+        with:
+          host: http://ec2-35-90-12-71.us-west-2.compute.amazonaws.com
+          port: 8125
+          prefix: deadwood
+          flush-time: 10000
+          timings: | 
+            step_duration:${{ steps.run-tests.outputs.step_duration }}
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -45,6 +54,10 @@ jobs:
 
       - name: Run tests
         run: |
+          start=$(date +%s%N)
           cd deadwoodblog
           yarn rw test
+          end=$(date +%s%N)
+          duration=$((($end - $start)/1000000))
+        id: run-tests
 
