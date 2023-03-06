@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@redwoodjs/core": "4.2.2",
+    "@storybook/addon-storyshots": "^6.5.16",
     "jest-image-snapshot": "^6.1.0"
   },
   "eslintConfig": {

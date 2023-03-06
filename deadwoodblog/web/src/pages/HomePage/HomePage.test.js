@@ -1,5 +1,4 @@
 import { render } from '@redwoodjs/testing/web'
-
 import HomePage from './HomePage'
 
 describe('HomePage', () => {
@@ -8,5 +7,6 @@ describe('HomePage', () => {
       render(<HomePage />)
     }).not.toThrow()
   })
-  
+
 })
+
