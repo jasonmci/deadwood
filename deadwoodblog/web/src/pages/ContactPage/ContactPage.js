@@ -1,5 +1,12 @@
 import { MetaTags } from '@redwoodjs/web'
-import { FieldError, Form, TextField, TextAreaField, Submit } from '@redwoodjs/forms'
+import { 
+  FieldError, 
+  Form, 
+  Label,
+  TextField, 
+  TextAreaField, 
+  Submit 
+} from '@redwoodjs/forms'
 
 const ContactPage = ( { onSubmit }) => {
   // const onSubmit = (data) => {
@@ -8,20 +15,45 @@ const ContactPage = ( { onSubmit }) => {
   return (
     <>
       <MetaTags title="Contact" description="Contact page" />
+      <Form onSubmit={onSubmit} config={{ mode: 'onBlur'}}>
+        <label name="name" errorclassname="error">
+          Name
+        </label>
+        <TextField 
+          name="name" 
+          data-testid="contact-name" 
+          validation={{ required: true }} 
+          errorClassName="error"/>
+        <FieldError name="name" className="error" />
 
-      <Form onSubmit={onSubmit}>
-        <label htmlFor="name">Name</label>
-        <TextField name="name" data-testid="contact-name" validation={{ required: true }} />
-        <FieldError name="name" />
+        <label name="email" errorclassname="error">
+          Email
+        </label>
+        <TextField 
+          name="email" 
+          data-testid="contact-email" 
+          validation={{ 
+            required: true,
+            pattern: {
+              value: /^[^@]+@[^.]+\..+$/,
+              message: 'Please enter a valid email address',
+            },
+          }} 
+          errorClassName="error"
+        />
+        <FieldError name="email" className="error" />
 
-        <label htmlFor="email">Email</label>
-        <TextField name="email" data-testid="contact-email" validation={{ required: true }} />
-        <FieldError name="email" />
+        <label name="message" errorclassname="error">
+          Message
+        </label>
+        <TextAreaField 
+          name="message" 
+          data-testid="contact-message" 
+          validation={{ required: true }}
+          errorClassName="error" 
+        />
+        <FieldError name="message" className="error" />
 
-        <label htmlFor="message">Message</label>
-        <TextAreaField name="message" data-testid="contact-message" validation={{ required: true }} />
-        <FieldError name="message" />
-        
         <Submit data-testid="contact-submit">Save</Submit>
       </Form>
     </>
