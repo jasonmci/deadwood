@@ -1,60 +1,91 @@
-import { MetaTags } from '@redwoodjs/web'
-import { 
-  FieldError, 
-  Form, 
+import { MetaTags, useMutation } from '@redwoodjs/web'
+import { toast, Toaster } from '@redwoodjs/web/toast'
+import {
+  FieldError,
+  Form,
+  FormError,
   Label,
-  TextField, 
-  TextAreaField, 
-  Submit 
+  Submit,
+  TextAreaField,
+  TextField,
+  useForm,
 } from '@redwoodjs/forms'
 
-const ContactPage = ( { onSubmit }) => {
-  // const onSubmit = (data) => {
-  //   console.log(data)
-  // }
+const CREATE_CONTACT = gql`
+  mutation CreateContactMutation($input: CreateContactInput!) {
+    createContact(input: $input) {
+      id
+    }
+  }
+`
+
+const ContactPage = () => {
+  const formMethods = useForm()
+
+  const [create, { loading, error }] = useMutation(CREATE_CONTACT, {
+    onCompleted: () => {
+      toast.success('Thank you for your submission!')
+      formMethods.reset()
+    },
+  })
+
+  const onSubmit = (data) => {
+    create({ variables: { input: data } })
+  }
+
   return (
     <>
       <MetaTags title="Contact" description="Contact page" />
-      <Form onSubmit={onSubmit} config={{ mode: 'onBlur'}}>
-        <label name="name" errorclassname="error">
+
+      <Toaster />
+      <Form
+        onSubmit={onSubmit}
+        config={{ mode: 'onBlur' }}
+        error={error}
+        formMethods={formMethods}
+      >
+        <FormError error={error} wrapperClassName="form-error" />
+
+        <Label name="name" errorClassName="error">
           Name
-        </label>
-        <TextField 
-          name="name" 
-          data-testid="contact-name" 
-          validation={{ required: true }} 
-          errorClassName="error"/>
+        </Label>
+        <TextField
+          name="name"
+          validation={{ required: true }}
+          data-testid="contact-name"
+          errorClassName="error"
+        />
         <FieldError name="name" className="error" />
 
-        <label name="email" errorclassname="error">
+        <Label name="email" errorClassName="error">
           Email
-        </label>
-        <TextField 
-          name="email" 
-          data-testid="contact-email" 
-          validation={{ 
+        </Label>
+        <TextField
+          name="email"
+          data-testid="contact-email"
+          validation={{
             required: true,
             pattern: {
               value: /^[^@]+@[^.]+\..+$/,
               message: 'Please enter a valid email address',
             },
-          }} 
+          }}
           errorClassName="error"
         />
         <FieldError name="email" className="error" />
 
-        <label name="message" errorclassname="error">
+        <Label name="message" errorClassName="error">
           Message
-        </label>
-        <TextAreaField 
-          name="message" 
-          data-testid="contact-message" 
+        </Label>
+        <TextAreaField
+          name="message"
+          data-testid="contact-message"
           validation={{ required: true }}
-          errorClassName="error" 
+          errorClassName="error"
         />
         <FieldError name="message" className="error" />
 
-        <Submit data-testid="contact-submit">Save</Submit>
+        <Submit data-testid="contact-submit" disabled={loading}>Save</Submit>
       </Form>
     </>
   )
